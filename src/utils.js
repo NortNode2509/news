@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react"
+
 const SPACEID = '87q1y9nxj6pl'
 const TOKEN = 'oMdYPneO2i1y0acbKR6sVdHxEZtlOYB9Dq6d_zKJQnk'
 
@@ -37,6 +39,7 @@ export async function  getPostsList() {
     query {
   postCollection {
     items {
+      sys {id}
       title
       excerpt
       postAuthor {
@@ -53,5 +56,32 @@ export async function  getPostsList() {
 
   const andmed = await _fetch(request, 1)
   console.log(andmed)
-
+  return andmed.data?.postCollection?.items || []
 }
+
+export function usePostsList() {
+  const [postsListData, setPostsListData ] = useState([])
+  const [isLoadingPosts, setIsLoadingPosts ] = useState(false)
+  const [postsError, setPostsError ] = useState("")
+
+  const fetchData = async () => {
+    setIsLoadingPosts(true)
+    let postsData = []
+    try {
+      postsData = await getPostsList()
+      setPostsListData(() => postsData)
+      setIsLoadingPosts(false)
+      setPostsError("")
+    } catch (e) {
+      setPostsError("Viga anmdete lugemisel: " + e.message)
+    }
+  }
+  
+  useEffect(() => {
+    fetchData()
+  }, [])
+
+  return {postsListData, isLoadingPosts, postsError}
+}
+
+//todo: veel üks customHook, mis loeb ühe postituse andmed vastavalt postituse id-le

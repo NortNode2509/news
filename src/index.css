@@ -1,0 +1,10 @@
+.postListImage {
+  overflow: hidden;
+  height: 200px;
+  width: 90%;
+}
+.postListImage img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
