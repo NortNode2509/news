@@ -94,7 +94,23 @@ async function getPostDetails(postId) {
           email
         }
         postPic {url}
-        content {json}
+        content {
+          json
+          links {
+            assets {
+              block {
+                sys {
+                  id
+                }
+                url
+                fileName
+                contentType
+                width
+                height
+              }
+            }
+          }
+        }
         }
     }
     `
@@ -103,7 +119,8 @@ async function getPostDetails(postId) {
     title: detailsData.data.post.title,
     authorName: detailsData.data.post.postAuthor?.name || 'unknown',
     authorEmail: detailsData.data.post.postAuthor.email,
-    content: detailsData.data.post.content.json
+    content: detailsData.data.post.content.json,
+    links: detailsData.data.post.content.links
   }
 }
 
