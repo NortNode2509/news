@@ -84,4 +84,58 @@ export function usePostsList() {
   return {postsListData, isLoadingPosts, postsError}
 }
 
-//todo: veel üks customHook, mis loeb ühe postituse andmed vastavalt postituse id-le
+async function getPostDetails(postId) {
+  const detailsQuery = `
+    query {
+      post(id: "${postId}") {
+        title
+        postAuthor {
+          name
+          email
+        }
+        postPic {url}
+        content {json}
+        }
+    }
+    `
+  const detailsData = await _fetch(detailsQuery, 1)
+  return {
+    title: detailsData.data.post.title,
+    authorName: detailsData.data.post.postAuthor?.name || 'unknown',
+    authorEmail: detailsData.data.post.postAuthor.email,
+    content: detailsData.data.post.content.json
+  }
+}
+
+export function usePostDetails(postId) {
+  const [postData, setPostData ] = useState('')
+  const [isLoading, setIsLoading ] = useState(false)
+  const [error, setError ] = useState('')
+
+  const fetchDetailsData = async () => {
+    let detailsData = null
+    try {
+      setIsLoading(true)
+      detailsData = await getPostDetails(postId)
+      setPostData(() => detailsData)
+      setError("")
+    } catch (e) {
+      setError("Ei õnnestunud lugeda postitust. Proovi uuesti.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+      console.log('Hakkan laadima postitust ', postId)
+      fetchDetailsData()
+    }, [postId]
+  ) 
+
+  return {
+    postData, isLoading, error
+  }
+
+  }
+
+

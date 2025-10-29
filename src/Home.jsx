@@ -1,6 +1,5 @@
-import { useEffect } from "react"
-import { getPostsList, usePostsList } from "./utils.js"
 import { PostListElement } from "./PostListElement.jsx"
+import { usePostsList } from "./utils.js"
 
 export function Home() {
     const {postsListData, isLoadingPosts, postsError} = usePostsList()
