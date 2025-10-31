@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+// React imports removed; this module only provides fetch helpers
 
 const SPACEID = '87q1y9nxj6pl'
 const TOKEN = 'oMdYPneO2i1y0acbKR6sVdHxEZtlOYB9Dq6d_zKJQnk'
@@ -59,32 +59,9 @@ export async function  getPostsList() {
   return andmed.data?.postCollection?.items || []
 }
 
-export function usePostsList() {
-  const [postsListData, setPostsListData ] = useState([])
-  const [isLoadingPosts, setIsLoadingPosts ] = useState(false)
-  const [postsError, setPostsError ] = useState("")
+// React hooks removed; data fetching handled via Zustand store
 
-  const fetchData = async () => {
-    setIsLoadingPosts(true)
-    let postsData = []
-    try {
-      postsData = await getPostsList()
-      setPostsListData(() => postsData)
-      setIsLoadingPosts(false)
-      setPostsError("")
-    } catch (e) {
-      setPostsError("Viga anmdete lugemisel: " + e.message)
-    }
-  }
-  
-  useEffect(() => {
-    fetchData()
-  }, [])
-
-  return {postsListData, isLoadingPosts, postsError}
-}
-
-async function getPostDetails(postId) {
+export async function getPostDetails(postId) {
   const detailsQuery = `
     query {
       post(id: "${postId}") {
@@ -124,35 +101,6 @@ async function getPostDetails(postId) {
   }
 }
 
-export function usePostDetails(postId) {
-  const [postData, setPostData ] = useState('')
-  const [isLoading, setIsLoading ] = useState(false)
-  const [error, setError ] = useState('')
-
-  const fetchDetailsData = async () => {
-    let detailsData = null
-    try {
-      setIsLoading(true)
-      detailsData = await getPostDetails(postId)
-      setPostData(() => detailsData)
-      setError("")
-    } catch (e) {
-      setError("Ei õnnestunud lugeda postitust. Proovi uuesti.")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-      console.log('Hakkan laadima postitust ', postId)
-      fetchDetailsData()
-    }, [postId]
-  ) 
-
-  return {
-    postData, isLoading, error
-  }
-
-  }
+// React hooks removed; details fetching handled via Zustand store
 
 
