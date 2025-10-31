@@ -1,11 +1,21 @@
+import { useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { usePostDetails} from './utils.js'
+import { usePostsStore } from './store/postsStore'
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import { BLOCKS } from "@contentful/rich-text-types";
 
 export function PostDetails() {
     const {postId} = useParams()
-    const {postData, isLoading, error} = usePostDetails(postId)
+    const postData = usePostsStore(s => s.postById[postId])
+    const isLoading = usePostsStore(s => s.postLoadingById[postId])
+    const error = usePostsStore(s => s.postErrorById[postId])
+    const fetchPostById = usePostsStore(s => s.fetchPostById)
+
+    useEffect(() => {
+        if (!postData && postId) {
+            fetchPostById(postId)
+        }
+    }, [postId])
     
     // Create a map of asset IDs to asset data from links
     const getAssetMap = (links) => {
